@@ -50,6 +50,14 @@ const ProviderWizard = () => {
   });
 
   useEffect(() => {
+    if (currentStep === 1) {
+      step1Form.reset(formData as Step1Data);
+    } else if (currentStep === 2) {
+      step2Form.reset(formData as Step2Data);
+    }
+  }, [currentStep]);
+
+  useEffect(() => {
     const starCanvas = starCanvasRef.current;
     const particleCanvas = particleCanvasRef.current;
     if (!starCanvas || !particleCanvas) return;
@@ -151,6 +159,10 @@ const ProviderWizard = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleEditStep = (step: number) => {
+    setCurrentStep(step);
   };
 
   return (
@@ -392,9 +404,17 @@ const ProviderWizard = () => {
 
                   <div className="space-y-4 glass-card p-6 rounded-lg border border-border/50">
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-4">
-                        Basic Information
-                      </h3>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Basic Information
+                        </h3>
+                        <button
+                          onClick={() => handleEditStep(1)}
+                          className="text-sm text-primary hover:text-primary/80 hover:underline transition-colors"
+                        >
+                          Edit
+                        </button>
+                      </div>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Name:</span>
@@ -420,9 +440,17 @@ const ProviderWizard = () => {
                     </div>
 
                     <div className="border-t border-border/30 pt-4">
-                      <h3 className="text-lg font-semibold text-foreground mb-4">
-                        Preferences
-                      </h3>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Preferences
+                        </h3>
+                        <button
+                          onClick={() => handleEditStep(2)}
+                          className="text-sm text-primary hover:text-primary/80 hover:underline transition-colors"
+                        >
+                          Edit
+                        </button>
+                      </div>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Locations:</span>
