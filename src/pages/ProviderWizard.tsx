@@ -1,12 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/hooks/use-toast";
+
+// Validation schemas for each step
+const step1Schema = z.object({
+  fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone must be at least 10 digits").max(15),
+  specialty: z.string().min(2, "Specialty is required"),
+  licenseNumber: z.string().min(5, "License number is required"),
+});
+
+const step2Schema = z.object({
+  preferredLocations: z.string().min(1, "Please select at least one location"),
+  availability: z.enum(["full-time", "part-time", "flexible"], {
+    required_error: "Please select availability",
+  }),
+  yearsExperience: z.string().min(1, "Years of experience is required"),
+  additionalNotes: z.string().optional(),
+});
+
+type Step1Data = z.infer<typeof step1Schema>;
+type Step2Data = z.infer<typeof step2Schema>;
 
 const ProviderWizard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const starCanvasRef = useRef<HTMLCanvasElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>({});
+
+  const step1Form = useForm<Step1Data>({
+    resolver: zodResolver(step1Schema),
+    defaultValues: formData as Step1Data,
+  });
+
+  const step2Form = useForm<Step2Data>({
+    resolver: zodResolver(step2Schema),
+    defaultValues: formData as Step2Data,
+  });
 
   useEffect(() => {
     const starCanvas = starCanvasRef.current;
@@ -82,10 +123,26 @@ const ProviderWizard = () => {
     return () => window.removeEventListener("resize", resizeCanvases);
   }, []);
 
-  const handleNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
+  const handleNext = async () => {
+    if (currentStep === 1) {
+      const isValid = await step1Form.trigger();
+      if (!isValid) return;
+      
+      const data = step1Form.getValues();
+      setFormData((prev) => ({ ...prev, ...data }));
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      const isValid = await step2Form.trigger();
+      if (!isValid) return;
+      
+      const data = step2Form.getValues();
+      setFormData((prev) => ({ ...prev, ...data }));
+      setCurrentStep(3);
     } else {
+      toast({
+        title: "Setup Complete!",
+        description: "Your provider profile has been created successfully.",
+      });
       navigate("/dashboard");
     }
   };
@@ -141,19 +198,259 @@ const ProviderWizard = () => {
             </div>
 
             {/* Step content */}
-            <div className="min-h-[300px] flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  {currentStep === 1 && "Step 1: Basic Information"}
-                  {currentStep === 2 && "Step 2: Preferences"}
-                  {currentStep === 3 && "Step 3: Confirmation"}
-                </h2>
-                <p className="text-muted-foreground">
-                  {currentStep === 1 && "Configure your provider information"}
-                  {currentStep === 2 && "Set your preferences and settings"}
-                  {currentStep === 3 && "Review and confirm your setup"}
-                </p>
-              </div>
+            <div className="min-h-[400px]">
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-semibold text-foreground mb-2">
+                      Basic Information
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Tell us about yourself
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">Full Name *</Label>
+                      <Input
+                        id="fullName"
+                        placeholder="Dr. John Smith"
+                        {...step1Form.register("fullName")}
+                        className="glass-card border-border/50"
+                      />
+                      {step1Form.formState.errors.fullName && (
+                        <p className="text-sm text-red-400">
+                          {step1Form.formState.errors.fullName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="john.smith@example.com"
+                        {...step1Form.register("email")}
+                        className="glass-card border-border/50"
+                      />
+                      {step1Form.formState.errors.email && (
+                        <p className="text-sm text-red-400">
+                          {step1Form.formState.errors.email.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Input
+                        id="phone"
+                        placeholder="(555) 123-4567"
+                        {...step1Form.register("phone")}
+                        className="glass-card border-border/50"
+                      />
+                      {step1Form.formState.errors.phone && (
+                        <p className="text-sm text-red-400">
+                          {step1Form.formState.errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="specialty">Medical Specialty *</Label>
+                      <Input
+                        id="specialty"
+                        placeholder="Neurosciences, Pain Management, etc."
+                        {...step1Form.register("specialty")}
+                        className="glass-card border-border/50"
+                      />
+                      {step1Form.formState.errors.specialty && (
+                        <p className="text-sm text-red-400">
+                          {step1Form.formState.errors.specialty.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="licenseNumber">License Number *</Label>
+                      <Input
+                        id="licenseNumber"
+                        placeholder="NE-12345"
+                        {...step1Form.register("licenseNumber")}
+                        className="glass-card border-border/50"
+                      />
+                      {step1Form.formState.errors.licenseNumber && (
+                        <p className="text-sm text-red-400">
+                          {step1Form.formState.errors.licenseNumber.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-semibold text-foreground mb-2">
+                      Preferences
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Set your working preferences
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="preferredLocations">Preferred Locations *</Label>
+                      <Input
+                        id="preferredLocations"
+                        placeholder="Bergan Mercy, Lakeside, etc."
+                        {...step2Form.register("preferredLocations")}
+                        className="glass-card border-border/50"
+                      />
+                      {step2Form.formState.errors.preferredLocations && (
+                        <p className="text-sm text-red-400">
+                          {step2Form.formState.errors.preferredLocations.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label>Availability *</Label>
+                      <RadioGroup
+                        onValueChange={(value) => step2Form.setValue("availability", value as "full-time" | "part-time" | "flexible")}
+                        defaultValue={step2Form.getValues("availability")}
+                        className="flex flex-col space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="full-time" id="full-time" />
+                          <Label htmlFor="full-time" className="font-normal cursor-pointer">
+                            Full-time
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="part-time" id="part-time" />
+                          <Label htmlFor="part-time" className="font-normal cursor-pointer">
+                            Part-time
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="flexible" id="flexible" />
+                          <Label htmlFor="flexible" className="font-normal cursor-pointer">
+                            Flexible
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                      {step2Form.formState.errors.availability && (
+                        <p className="text-sm text-red-400">
+                          {step2Form.formState.errors.availability.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="yearsExperience">Years of Experience *</Label>
+                      <Input
+                        id="yearsExperience"
+                        type="number"
+                        placeholder="10"
+                        {...step2Form.register("yearsExperience")}
+                        className="glass-card border-border/50"
+                      />
+                      {step2Form.formState.errors.yearsExperience && (
+                        <p className="text-sm text-red-400">
+                          {step2Form.formState.errors.yearsExperience.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="additionalNotes">Additional Notes</Label>
+                      <Textarea
+                        id="additionalNotes"
+                        placeholder="Any additional information you'd like to share..."
+                        {...step2Form.register("additionalNotes")}
+                        className="glass-card border-border/50 min-h-[100px]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-semibold text-foreground mb-2">
+                      Review & Confirm
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Please review your information
+                    </p>
+                  </div>
+
+                  <div className="space-y-4 glass-card p-6 rounded-lg border border-border/50">
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-4">
+                        Basic Information
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Name:</span>
+                          <span className="text-foreground">{formData.fullName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Email:</span>
+                          <span className="text-foreground">{formData.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Phone:</span>
+                          <span className="text-foreground">{formData.phone}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Specialty:</span>
+                          <span className="text-foreground">{formData.specialty}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">License:</span>
+                          <span className="text-foreground">{formData.licenseNumber}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border/30 pt-4">
+                      <h3 className="text-lg font-semibold text-foreground mb-4">
+                        Preferences
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Locations:</span>
+                          <span className="text-foreground">{formData.preferredLocations}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Availability:</span>
+                          <span className="text-foreground capitalize">
+                            {formData.availability?.replace("-", " ")}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Experience:</span>
+                          <span className="text-foreground">{formData.yearsExperience} years</span>
+                        </div>
+                        {formData.additionalNotes && (
+                          <div className="pt-2">
+                            <span className="text-muted-foreground block mb-1">Notes:</span>
+                            <span className="text-foreground text-xs block">
+                              {formData.additionalNotes}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Navigation buttons */}
@@ -170,7 +467,7 @@ const ProviderWizard = () => {
                 onClick={handleNext}
                 className="bg-primary hover:bg-primary/90"
               >
-                {currentStep === 3 ? "Complete" : "Next"}
+                {currentStep === 3 ? "Complete Setup" : "Next Step"}
               </Button>
             </div>
           </div>
