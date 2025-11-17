@@ -13,10 +13,6 @@ interface ProviderProfile {
   slug: string;
   first_name: string;
   last_name: string;
-  email: string;
-  phone: string;
-  license_number: string;
-  license_state: string;
   specialties: string[];
   years_experience: string;
   availability: string[];
@@ -46,10 +42,9 @@ const PublicProfile = () => {
 
       try {
         const { data, error: fetchError } = await supabase
-          .from("provider_profiles")
+          .from("provider_profiles_public")
           .select("*")
           .eq("slug", slug)
-          .eq("is_public", true)
           .maybeSingle();
 
         if (fetchError) throw fetchError;
@@ -137,30 +132,6 @@ const PublicProfile = () => {
           </CardHeader>
         </Card>
 
-        {/* Contact Information */}
-        <Card className="glass-card mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5" />
-              Contact Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Mail className="h-4 w-4 text-muted-foreground" />
-              <a href={`mailto:${profile.email}`} className="hover:text-primary transition-colors">
-                {profile.email}
-              </a>
-            </div>
-            <div className="flex items-center gap-3">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <a href={`tel:${profile.phone}`} className="hover:text-primary transition-colors">
-                {profile.phone}
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Professional Details */}
         <Card className="glass-card mb-6">
           <CardHeader>
@@ -169,14 +140,7 @@ const PublicProfile = () => {
               Professional Details
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-sm text-muted-foreground mb-1">License Information</h4>
-              <p className="text-lg">
-                {profile.license_number} ({profile.license_state})
-              </p>
-            </div>
-            <Separator />
+          <CardContent>
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-1">Years of Experience</h4>
               <p className="text-lg">{profile.years_experience}</p>

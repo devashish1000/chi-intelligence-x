@@ -1,8 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    navigate("/");
+  };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#150b3b] via-[#1d0f52] to-black">
@@ -35,7 +53,7 @@ const Dashboard = () => {
                   Modify Selection
                 </Button>
                 <Button
-                  onClick={() => navigate("/")}
+                  onClick={handleSignOut}
                   variant="outline"
                   className="glass-card border-border/50 hover:bg-secondary/50"
                 >
