@@ -42,6 +42,7 @@ const ProviderWizard = () => {
   const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>({});
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -143,7 +144,12 @@ const ProviderWizard = () => {
       const data = step1Form.getValues();
       setFormData((prev) => ({ ...prev, ...data }));
       setCompletedSteps((prev) => new Set(prev).add(1));
-      setCurrentStep(2);
+      
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentStep(2);
+        setIsTransitioning(false);
+      }, 150);
     } else if (currentStep === 2) {
       const isValid = await step2Form.trigger();
       if (!isValid) return;
@@ -151,7 +157,12 @@ const ProviderWizard = () => {
       const data = step2Form.getValues();
       setFormData((prev) => ({ ...prev, ...data }));
       setCompletedSteps((prev) => new Set(prev).add(2));
-      setCurrentStep(3);
+      
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentStep(3);
+        setIsTransitioning(false);
+      }, 150);
     } else {
       toast({
         title: "Setup Complete!",
@@ -163,18 +174,30 @@ const ProviderWizard = () => {
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentStep(currentStep - 1);
+        setIsTransitioning(false);
+      }, 150);
     }
   };
 
   const handleEditStep = (step: number) => {
-    setCurrentStep(step);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentStep(step);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const handleStepClick = (step: number) => {
     if (completedSteps.has(step) || step < currentStep) {
-      setCurrentStep(step);
-      setIsMobileSidebarOpen(false); // Close mobile menu after navigation
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentStep(step);
+        setIsMobileSidebarOpen(false);
+        setIsTransitioning(false);
+      }, 150);
     }
   };
 
@@ -306,7 +329,13 @@ const ProviderWizard = () => {
             {/* Step content */}
             <div className="min-h-[400px]">
               {currentStep === 1 && (
-                <div className="space-y-6">
+                <div 
+                  key="step-1"
+                  className={cn(
+                    "space-y-6 transition-all duration-300",
+                    isTransitioning ? "animate-fade-out opacity-0" : "animate-fade-in opacity-100"
+                  )}
+                >
                   <div className="text-center mb-6">
                     <h2 className="text-2xl font-semibold text-foreground mb-2">
                       Basic Information
@@ -397,7 +426,13 @@ const ProviderWizard = () => {
               )}
 
               {currentStep === 2 && (
-                <div className="space-y-6">
+                <div 
+                  key="step-2"
+                  className={cn(
+                    "space-y-6 transition-all duration-300",
+                    isTransitioning ? "animate-fade-out opacity-0" : "animate-fade-in opacity-100"
+                  )}
+                >
                   <div className="text-center mb-6">
                     <h2 className="text-2xl font-semibold text-foreground mb-2">
                       Preferences
@@ -486,7 +521,13 @@ const ProviderWizard = () => {
               )}
 
               {currentStep === 3 && (
-                <div className="space-y-6">
+                <div 
+                  key="step-3"
+                  className={cn(
+                    "space-y-6 transition-all duration-300",
+                    isTransitioning ? "animate-fade-out opacity-0" : "animate-fade-in opacity-100"
+                  )}
+                >
                   <div className="text-center mb-6">
                     <h2 className="text-2xl font-semibold text-foreground mb-2">
                       Review & Confirm

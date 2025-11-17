@@ -100,6 +100,10 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fade-out": {
+          "0%": { opacity: "1", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -109,6 +113,7 @@ export default {
         "float-3": "float-3 16s ease-in-out infinite",
         "hue-rotate": "hue-rotate 18s linear infinite",
         "fade-in": "fade-in 0.6s ease-out",
+        "fade-out": "fade-out 0.3s ease-out",
       },
     },
   },
