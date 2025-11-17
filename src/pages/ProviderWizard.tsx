@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { User, Settings, CheckCircle } from "lucide-react";
+import { User, Settings, CheckCircle, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Validation schemas for each step
@@ -41,6 +41,7 @@ const ProviderWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>({});
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -173,6 +174,7 @@ const ProviderWizard = () => {
   const handleStepClick = (step: number) => {
     if (completedSteps.has(step) || step < currentStep) {
       setCurrentStep(step);
+      setIsMobileSidebarOpen(false); // Close mobile menu after navigation
     }
   };
 
@@ -205,9 +207,33 @@ const ProviderWizard = () => {
 
       {/* Main content container */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        {/* Mobile Hamburger Menu Button */}
+        <button
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          className="md:hidden fixed top-4 left-4 z-50 p-3 bg-background/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:bg-accent transition-colors"
+          aria-label="Toggle menu"
+        >
+          {isMobileSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+
+        {/* Mobile Overlay */}
+        {isMobileSidebarOpen && (
+          <div
+            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+
         <div className="flex gap-6 w-full max-w-5xl">
           {/* Sidebar Navigation */}
-          <div className="glass-card rounded-2xl shadow-2xl backdrop-blur-xl border border-white/10 p-6 w-64 h-fit animate-fade-in hidden md:block">
+          <div className={cn(
+            "glass-card rounded-2xl shadow-2xl backdrop-blur-xl border border-white/10 p-6 w-64 h-fit animate-fade-in",
+            "md:block", // Always visible on desktop
+            "transition-transform duration-300 ease-in-out",
+            // Mobile: fixed positioned, slide in/out
+            "fixed md:relative top-20 md:top-0 left-4 md:left-0 z-50 md:z-auto",
+            isMobileSidebarOpen ? "translate-x-0" : "-translate-x-[calc(100%+2rem)] md:translate-x-0"
+          )}>
             <h2 className="text-lg font-semibold text-foreground mb-6">Setup Steps</h2>
             <div className="space-y-3">
               {steps.map((step) => {
