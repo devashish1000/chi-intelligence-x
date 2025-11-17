@@ -33,7 +33,7 @@ export type Database = {
           specialties: string[]
           therapeutic_approaches: string[]
           updated_at: string
-          user_id: string | null
+          user_id: string
           years_experience: string
         }
         Insert: {
@@ -54,7 +54,7 @@ export type Database = {
           specialties?: string[]
           therapeutic_approaches?: string[]
           updated_at?: string
-          user_id?: string | null
+          user_id: string
           years_experience: string
         }
         Update: {
@@ -75,14 +75,64 @@ export type Database = {
           specialties?: string[]
           therapeutic_approaches?: string[]
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
           years_experience?: string
         }
         Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      provider_profiles_public: {
+        Row: {
+          accepts_insurance: string | null
+          availability: string[] | null
+          created_at: string | null
+          first_name: string | null
+          id: string | null
+          is_public: boolean | null
+          languages: string[] | null
+          last_name: string | null
+          session_types: string[] | null
+          slug: string | null
+          specialties: string[] | null
+          therapeutic_approaches: string[] | null
+          updated_at: string | null
+          years_experience: string | null
+        }
+        Insert: {
+          accepts_insurance?: string | null
+          availability?: string[] | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_public?: boolean | null
+          languages?: string[] | null
+          last_name?: string | null
+          session_types?: string[] | null
+          slug?: string | null
+          specialties?: string[] | null
+          therapeutic_approaches?: string[] | null
+          updated_at?: string | null
+          years_experience?: string | null
+        }
+        Update: {
+          accepts_insurance?: string | null
+          availability?: string[] | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_public?: boolean | null
+          languages?: string[] | null
+          last_name?: string | null
+          session_types?: string[] | null
+          slug?: string | null
+          specialties?: string[] | null
+          therapeutic_approaches?: string[] | null
+          updated_at?: string | null
+          years_experience?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
