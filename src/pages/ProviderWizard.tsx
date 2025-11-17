@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
+import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle, RotateCcw, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Validation schemas for each step
@@ -295,6 +295,10 @@ const ProviderWizard = () => {
       title: "Form Reset",
       description: "All form data has been cleared successfully.",
     });
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const steps = [
@@ -892,14 +896,24 @@ const ProviderWizard = () => {
             </div>
           </div>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel>Go Back</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmSubmit}
-              className="bg-primary hover:bg-primary/90"
+          <AlertDialogFooter className="sm:justify-between">
+            <Button
+              onClick={handlePrint}
+              variant="outline"
+              className="glass-card border-border/50"
             >
-              Confirm & Complete
-            </AlertDialogAction>
+              <Printer className="h-4 w-4 mr-2" />
+              Print / Save PDF
+            </Button>
+            <div className="flex gap-2">
+              <AlertDialogCancel>Go Back</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleConfirmSubmit}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Confirm & Complete
+              </AlertDialogAction>
+            </div>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
