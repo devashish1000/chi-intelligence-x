@@ -239,14 +239,15 @@ const ProviderWizard = () => {
   };
 
   const handleConfirmSubmit = () => {
-    // Clear localStorage on completion
-    localStorage.removeItem(STORAGE_KEY);
+    // Navigate to profile preview with the provider data
+    navigate("/profile-preview", {
+      state: { providerData: formData }
+    });
     
     toast({
       title: "Setup Complete!",
       description: "Your provider profile has been created successfully.",
     });
-    navigate("/dashboard");
   };
 
   const handleBack = () => {
