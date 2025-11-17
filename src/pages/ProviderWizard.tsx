@@ -90,6 +90,33 @@ const ProviderWizard = () => {
     setLastSaved(new Date());
   }, [formData, currentStep, completedSteps]);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTextarea = target.tagName === 'TEXTAREA';
+      
+      // Enter: go to next step (unless in textarea)
+      if (e.key === 'Enter' && !isTextarea) {
+        e.preventDefault();
+        handleNext();
+      }
+      
+      // Escape: close mobile sidebar or go back
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (isMobileSidebarOpen) {
+          setIsMobileSidebarOpen(false);
+        } else if (currentStep > 1) {
+          handleBack();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentStep, isMobileSidebarOpen]);
+
   useEffect(() => {
     const starCanvas = starCanvasRef.current;
     const particleCanvas = particleCanvasRef.current;
@@ -368,6 +395,14 @@ const ProviderWizard = () => {
                   <div className="absolute inset-0 bg-white/20 animate-pulse" />
                 </div>
               </div>
+            </div>
+
+            {/* Keyboard shortcuts hint */}
+            <div className="mb-6 text-center">
+              <p className="text-xs text-muted-foreground/60">
+                <kbd className="px-1.5 py-0.5 bg-muted/50 rounded text-[10px] font-mono">Enter</kbd> to continue •{" "}
+                <kbd className="px-1.5 py-0.5 bg-muted/50 rounded text-[10px] font-mono">Esc</kbd> to go back
+              </p>
             </div>
 
             {/* Step content */}
