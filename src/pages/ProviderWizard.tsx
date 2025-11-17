@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle } from "lucide-react";
+import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Validation schemas for each step
@@ -71,6 +71,7 @@ const ProviderWizard = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -275,6 +276,25 @@ const ProviderWizard = () => {
         setIsTransitioning(false);
       }, 150);
     }
+  };
+
+  const handleReset = () => {
+    // Clear all form data
+    setFormData({});
+    setCurrentStep(1);
+    setCompletedSteps(new Set());
+    step1Form.reset({});
+    step2Form.reset({});
+    
+    // Clear localStorage
+    localStorage.removeItem(STORAGE_KEY);
+    
+    // Close dialog and show success message
+    setShowResetDialog(false);
+    toast({
+      title: "Form Reset",
+      description: "All form data has been cleared successfully.",
+    });
   };
 
   const steps = [
@@ -770,15 +790,25 @@ const ProviderWizard = () => {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex gap-4 justify-between mt-8">
-              <Button
-                onClick={handleBack}
-                variant="outline"
-                className="glass-card border-border/50"
-                disabled={currentStep === 1}
-              >
-                Back
-              </Button>
+            <div className="flex gap-4 justify-between items-center mt-8">
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleBack}
+                  variant="outline"
+                  className="glass-card border-border/50"
+                  disabled={currentStep === 1}
+                >
+                  Back
+                </Button>
+                <Button
+                  onClick={() => setShowResetDialog(true)}
+                  variant="outline"
+                  className="glass-card border-border/50 text-red-400 hover:text-red-500 hover:border-red-400/50"
+                >
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Reset
+                </Button>
+              </div>
               <Button
                 onClick={handleNext}
                 className="bg-primary hover:bg-primary/90"
@@ -869,6 +899,31 @@ const ProviderWizard = () => {
               className="bg-primary hover:bg-primary/90"
             >
               Confirm & Complete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset Confirmation Dialog */}
+      <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <AlertDialogContent className="glass-card border-border/50">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <RotateCcw className="h-5 w-5 text-red-400" />
+              Reset Form Data?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              This action will clear all your form data and progress. This cannot be undone.
+              Are you sure you want to reset everything?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleReset}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Reset All Data
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
