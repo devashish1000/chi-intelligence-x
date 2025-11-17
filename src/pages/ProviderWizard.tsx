@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { User, Settings, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Validation schemas for each step
 const step1Schema = z.object({
@@ -38,6 +40,7 @@ const ProviderWizard = () => {
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>({});
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -138,6 +141,7 @@ const ProviderWizard = () => {
       
       const data = step1Form.getValues();
       setFormData((prev) => ({ ...prev, ...data }));
+      setCompletedSteps((prev) => new Set(prev).add(1));
       setCurrentStep(2);
     } else if (currentStep === 2) {
       const isValid = await step2Form.trigger();
@@ -145,6 +149,7 @@ const ProviderWizard = () => {
       
       const data = step2Form.getValues();
       setFormData((prev) => ({ ...prev, ...data }));
+      setCompletedSteps((prev) => new Set(prev).add(2));
       setCurrentStep(3);
     } else {
       toast({
@@ -164,6 +169,18 @@ const ProviderWizard = () => {
   const handleEditStep = (step: number) => {
     setCurrentStep(step);
   };
+
+  const handleStepClick = (step: number) => {
+    if (completedSteps.has(step) || step < currentStep) {
+      setCurrentStep(step);
+    }
+  };
+
+  const steps = [
+    { number: 1, title: "Basic Info", icon: User },
+    { number: 2, title: "Preferences", icon: Settings },
+    { number: 3, title: "Confirm", icon: CheckCircle },
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#0a021f] via-[#150b3b] to-black">
@@ -186,10 +203,61 @@ const ProviderWizard = () => {
         <div className="absolute top-[45%] left-[20%] w-[450px] h-[450px] rounded-full bg-gradient-to-br from-green-500/20 to-transparent blur-[90px] animate-float-3" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
-        <div className="w-full max-w-2xl animate-fade-in">
-          <div className="glass-card cosmic-glow rounded-2xl p-8 shadow-2xl">
+      {/* Main content container */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div className="flex gap-6 w-full max-w-5xl">
+          {/* Sidebar Navigation */}
+          <div className="glass-card rounded-2xl shadow-2xl backdrop-blur-xl border border-white/10 p-6 w-64 h-fit animate-fade-in hidden md:block">
+            <h2 className="text-lg font-semibold text-foreground mb-6">Setup Steps</h2>
+            <div className="space-y-3">
+              {steps.map((step) => {
+                const Icon = step.icon;
+                const isCompleted = completedSteps.has(step.number);
+                const isCurrent = currentStep === step.number;
+                const isClickable = isCompleted || step.number < currentStep;
+
+                return (
+                  <button
+                    key={step.number}
+                    onClick={() => handleStepClick(step.number)}
+                    disabled={!isClickable && !isCurrent}
+                    className={cn(
+                      "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
+                      isCurrent && "bg-primary/20 border border-primary/30",
+                      isClickable && !isCurrent && "hover:bg-muted/30 cursor-pointer",
+                      !isClickable && !isCurrent && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "flex items-center justify-center w-10 h-10 rounded-full transition-all",
+                        isCurrent && "bg-primary text-primary-foreground",
+                        isCompleted && !isCurrent && "bg-primary/40 text-primary-foreground",
+                        !isCompleted && !isCurrent && "bg-muted/30 text-muted-foreground"
+                      )}
+                    >
+                      {isCompleted ? (
+                        <CheckCircle className="w-5 h-5" />
+                      ) : (
+                        <Icon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="text-left flex-1">
+                      <div className="text-sm font-medium text-foreground">
+                        Step {step.number}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {step.title}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Main wizard content */}
+          <div className="flex-1 glass-card cosmic-glow rounded-2xl p-8 shadow-2xl animate-fade-in">
             <h1 className="mb-2 text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-center">
               Provider Setup Wizard
             </h1>
