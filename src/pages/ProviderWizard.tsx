@@ -314,16 +314,24 @@ const ProviderWizard = () => {
               Step {currentStep} of 3
             </p>
 
-            {/* Progress indicator */}
-            <div className="flex gap-2 mb-8">
-              {[1, 2, 3].map((step) => (
+            {/* Progress bar */}
+            <div className="mb-8 space-y-2">
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="text-muted-foreground font-medium">
+                  Progress
+                </span>
+                <span className="text-foreground font-semibold">
+                  {Math.round(((currentStep - 1) / 2) * 100)}%
+                </span>
+              </div>
+              <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  key={step}
-                  className={`h-2 flex-1 rounded-full transition-all ${
-                    step <= currentStep ? "bg-primary" : "bg-border"
-                  }`}
-                />
-              ))}
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
+                >
+                  <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                </div>
+              </div>
             </div>
 
             {/* Step content */}
