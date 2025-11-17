@@ -8,6 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -60,6 +70,7 @@ const ProviderWizard = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -221,15 +232,20 @@ const ProviderWizard = () => {
         setIsTransitioning(false);
       }, 150);
     } else {
-      // Clear localStorage on completion
-      localStorage.removeItem(STORAGE_KEY);
-      
-      toast({
-        title: "Setup Complete!",
-        description: "Your provider profile has been created successfully.",
-      });
-      navigate("/dashboard");
+      // On step 3, show confirmation dialog instead of submitting
+      setShowConfirmDialog(true);
     }
+  };
+
+  const handleConfirmSubmit = () => {
+    // Clear localStorage on completion
+    localStorage.removeItem(STORAGE_KEY);
+    
+    toast({
+      title: "Setup Complete!",
+      description: "Your provider profile has been created successfully.",
+    });
+    navigate("/dashboard");
   };
 
   const handleBack = () => {
@@ -773,6 +789,90 @@ const ProviderWizard = () => {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent className="glass-card border-border/50 max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl">Confirm Your Information</AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              Please review your information before completing the setup.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4 my-4 max-h-[400px] overflow-y-auto">
+            {/* Basic Information Section */}
+            <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Basic Information
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Name:</span>
+                  <p className="text-foreground font-medium">{formData.fullName}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Email:</span>
+                  <p className="text-foreground font-medium">{formData.email}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Phone:</span>
+                  <p className="text-foreground font-medium">{formData.phone}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Specialty:</span>
+                  <p className="text-foreground font-medium">{formData.specialty}</p>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">License Number:</span>
+                  <p className="text-foreground font-medium">{formData.licenseNumber}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Preferences Section */}
+            <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Preferences
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Locations:</span>
+                  <p className="text-foreground font-medium">{formData.preferredLocations}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Availability:</span>
+                  <p className="text-foreground font-medium capitalize">
+                    {formData.availability?.replace("-", " ")}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Experience:</span>
+                  <p className="text-foreground font-medium">{formData.yearsExperience} years</p>
+                </div>
+                {formData.additionalNotes && (
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground">Additional Notes:</span>
+                    <p className="text-foreground font-medium">{formData.additionalNotes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmSubmit}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Confirm & Complete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
