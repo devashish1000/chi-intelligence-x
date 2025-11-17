@@ -33,6 +33,7 @@ export type Database = {
           specialties: string[]
           therapeutic_approaches: string[]
           updated_at: string
+          user_id: string | null
           years_experience: string
         }
         Insert: {
@@ -53,6 +54,7 @@ export type Database = {
           specialties?: string[]
           therapeutic_approaches?: string[]
           updated_at?: string
+          user_id?: string | null
           years_experience: string
         }
         Update: {
@@ -73,6 +75,7 @@ export type Database = {
           specialties?: string[]
           therapeutic_approaches?: string[]
           updated_at?: string
+          user_id?: string | null
           years_experience?: string
         }
         Relationships: []

@@ -3,14 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const starCanvasRef = useRef<HTMLCanvasElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
   const mouseBlobRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/service-selection');
+      }
+    });
+  }, [navigate]);
 
   useEffect(() => {
     const starCanvas = starCanvasRef.current;
@@ -103,10 +117,46 @@ const Index = () => {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", { email, password });
-    navigate("/service-selection");
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`
+          }
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success!",
+          description: "Account created successfully. You can now sign in.",
+        });
+        setIsSignUp(false);
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        navigate("/service-selection");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -161,10 +211,10 @@ const Index = () => {
           <div className="glass-card cosmic-glow rounded-2xl p-8 shadow-2xl">
             <div className="mb-8 text-center">
               <h1 className="mb-2 text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Welcome Back
+                {isSignUp ? 'Create Account' : 'Welcome Back'}
               </h1>
               <p className="text-muted-foreground">
-                Sign in to your cosmic account
+                {isSignUp ? 'Sign up to get started' : 'Sign in to your cosmic account'}
               </p>
             </div>
 
@@ -202,18 +252,21 @@ const Index = () => {
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground font-semibold transition-opacity"
+                disabled={loading}
               >
-                Sign In
+                {loading ? 'Please wait...' : (isSignUp ? 'Sign Up' : 'Sign In')}
               </Button>
 
-              <div className="text-center">
-                <a
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              {!isSignUp && (
+                <div className="text-center">
+                  <a
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              )}
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -245,13 +298,14 @@ const Index = () => {
             </form>
 
             <p className="mt-6 text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <a
-                href="#"
+              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{" "}
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
                 className="font-semibold text-primary hover:text-accent transition-colors"
               >
-                Sign up
-              </a>
+                {isSignUp ? 'Sign in' : 'Sign up'}
+              </button>
             </p>
           </div>
         </div>
