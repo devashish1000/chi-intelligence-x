@@ -8,6 +8,7 @@ import ServiceSelection from "./pages/ServiceSelection";
 import Dashboard from "./pages/Dashboard";
 import ProviderWizard from "./pages/ProviderWizard";
 import ProfilePreview from "./pages/ProfilePreview";
+import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/service-selection" element={<ServiceSelection />} />
           <Route path="/provider-wizard" element={<ProviderWizard />} />
           <Route path="/profile-preview" element={<ProfilePreview />} />
+          <Route path="/p/:slug" element={<PublicProfile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

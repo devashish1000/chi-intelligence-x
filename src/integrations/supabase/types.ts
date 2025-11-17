@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      provider_profiles: {
+        Row: {
+          accepts_insurance: string
+          availability: string[]
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_public: boolean
+          languages: string[]
+          last_name: string
+          license_number: string
+          license_state: string
+          phone: string
+          session_types: string[]
+          slug: string
+          specialties: string[]
+          therapeutic_approaches: string[]
+          updated_at: string
+          years_experience: string
+        }
+        Insert: {
+          accepts_insurance: string
+          availability?: string[]
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          is_public?: boolean
+          languages?: string[]
+          last_name: string
+          license_number: string
+          license_state: string
+          phone: string
+          session_types?: string[]
+          slug: string
+          specialties?: string[]
+          therapeutic_approaches?: string[]
+          updated_at?: string
+          years_experience: string
+        }
+        Update: {
+          accepts_insurance?: string
+          availability?: string[]
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_public?: boolean
+          languages?: string[]
+          last_name?: string
+          license_number?: string
+          license_state?: string
+          phone?: string
+          session_types?: string[]
+          slug?: string
+          specialties?: string[]
+          therapeutic_approaches?: string[]
+          updated_at?: string
+          years_experience?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
