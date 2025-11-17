@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { User, Settings, CheckCircle, Menu, X } from "lucide-react";
+import { User, Settings, CheckCircle, Menu, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Validation schemas for each step
@@ -64,11 +64,13 @@ const ProviderWizard = () => {
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
     defaultValues: formData as Step1Data,
+    mode: "onChange",
   });
 
   const step2Form = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
     defaultValues: formData as Step2Data,
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -427,12 +429,20 @@ const ProviderWizard = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Full Name *</Label>
-                      <Input
-                        id="fullName"
-                        placeholder="Dr. John Smith"
-                        {...step1Form.register("fullName")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="fullName"
+                          placeholder="Dr. John Smith"
+                          {...step1Form.register("fullName")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step1Form.watch("fullName") && !step1Form.formState.errors.fullName && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step1Form.formState.errors.fullName && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step1Form.formState.errors.fullName && (
                         <p className="text-sm text-red-400">
                           {step1Form.formState.errors.fullName.message}
@@ -442,13 +452,21 @@ const ProviderWizard = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="john.smith@example.com"
-                        {...step1Form.register("email")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="john.smith@example.com"
+                          {...step1Form.register("email")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step1Form.watch("email") && !step1Form.formState.errors.email && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step1Form.formState.errors.email && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step1Form.formState.errors.email && (
                         <p className="text-sm text-red-400">
                           {step1Form.formState.errors.email.message}
@@ -458,12 +476,20 @@ const ProviderWizard = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        placeholder="(555) 123-4567"
-                        {...step1Form.register("phone")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="phone"
+                          placeholder="(555) 123-4567"
+                          {...step1Form.register("phone")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step1Form.watch("phone") && !step1Form.formState.errors.phone && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step1Form.formState.errors.phone && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step1Form.formState.errors.phone && (
                         <p className="text-sm text-red-400">
                           {step1Form.formState.errors.phone.message}
@@ -473,12 +499,20 @@ const ProviderWizard = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="specialty">Medical Specialty *</Label>
-                      <Input
-                        id="specialty"
-                        placeholder="Neurosciences, Pain Management, etc."
-                        {...step1Form.register("specialty")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="specialty"
+                          placeholder="Neurosciences, Pain Management, etc."
+                          {...step1Form.register("specialty")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step1Form.watch("specialty") && !step1Form.formState.errors.specialty && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step1Form.formState.errors.specialty && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step1Form.formState.errors.specialty && (
                         <p className="text-sm text-red-400">
                           {step1Form.formState.errors.specialty.message}
@@ -488,12 +522,20 @@ const ProviderWizard = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="licenseNumber">License Number *</Label>
-                      <Input
-                        id="licenseNumber"
-                        placeholder="NE-12345"
-                        {...step1Form.register("licenseNumber")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="licenseNumber"
+                          placeholder="ABC123456"
+                          {...step1Form.register("licenseNumber")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step1Form.watch("licenseNumber") && !step1Form.formState.errors.licenseNumber && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step1Form.formState.errors.licenseNumber && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step1Form.formState.errors.licenseNumber && (
                         <p className="text-sm text-red-400">
                           {step1Form.formState.errors.licenseNumber.message}
@@ -524,12 +566,20 @@ const ProviderWizard = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="preferredLocations">Preferred Locations *</Label>
-                      <Input
-                        id="preferredLocations"
-                        placeholder="Bergan Mercy, Lakeside, etc."
-                        {...step2Form.register("preferredLocations")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="preferredLocations"
+                          placeholder="Bergan Mercy, Lakeside, etc."
+                          {...step2Form.register("preferredLocations")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step2Form.watch("preferredLocations") && !step2Form.formState.errors.preferredLocations && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step2Form.formState.errors.preferredLocations && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step2Form.formState.errors.preferredLocations && (
                         <p className="text-sm text-red-400">
                           {step2Form.formState.errors.preferredLocations.message}
@@ -572,13 +622,21 @@ const ProviderWizard = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="yearsExperience">Years of Experience *</Label>
-                      <Input
-                        id="yearsExperience"
-                        type="number"
-                        placeholder="10"
-                        {...step2Form.register("yearsExperience")}
-                        className="glass-card border-border/50"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="yearsExperience"
+                          type="number"
+                          placeholder="10"
+                          {...step2Form.register("yearsExperience")}
+                          className="glass-card border-border/50 pr-10"
+                        />
+                        {step2Form.watch("yearsExperience") && !step2Form.formState.errors.yearsExperience && (
+                          <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                        {step2Form.formState.errors.yearsExperience && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-red-400" />
+                        )}
+                      </div>
                       {step2Form.formState.errors.yearsExperience && (
                         <p className="text-sm text-red-400">
                           {step2Form.formState.errors.yearsExperience.message}
