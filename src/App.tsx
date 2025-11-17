@@ -11,7 +11,7 @@ import ProfilePreview from "./pages/ProfilePreview";
 import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient(); // Query client for React Query
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
