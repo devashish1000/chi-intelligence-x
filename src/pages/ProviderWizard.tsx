@@ -33,16 +33,33 @@ const step2Schema = z.object({
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
 
+const STORAGE_KEY = 'provider-wizard-autosave';
+
 const ProviderWizard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const starCanvasRef = useRef<HTMLCanvasElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>({});
-  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  
+  // Load saved data from localStorage on mount
+  const [currentStep, setCurrentStep] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved).currentStep || 1 : 1;
+  });
+  
+  const [formData, setFormData] = useState<Partial<Step1Data & Step2Data>>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved).formData || {} : {};
+  });
+  
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? new Set(JSON.parse(saved).completedSteps || []) : new Set();
+  });
+  
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -61,6 +78,17 @@ const ProviderWizard = () => {
       step2Form.reset(formData as Step2Data);
     }
   }, [currentStep]);
+
+  // Auto-save to localStorage
+  useEffect(() => {
+    const saveData = {
+      formData,
+      currentStep,
+      completedSteps: Array.from(completedSteps),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(saveData));
+    setLastSaved(new Date());
+  }, [formData, currentStep, completedSteps]);
 
   useEffect(() => {
     const starCanvas = starCanvasRef.current;
@@ -164,6 +192,9 @@ const ProviderWizard = () => {
         setIsTransitioning(false);
       }, 150);
     } else {
+      // Clear localStorage on completion
+      localStorage.removeItem(STORAGE_KEY);
+      
       toast({
         title: "Setup Complete!",
         description: "Your provider profile has been created successfully.",
@@ -310,8 +341,13 @@ const ProviderWizard = () => {
             <h1 className="mb-2 text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-center">
               Provider Setup Wizard
             </h1>
-            <p className="text-center text-muted-foreground mb-8">
+            <p className="text-center text-muted-foreground mb-8 flex items-center justify-center gap-2">
               Step {currentStep} of 3
+              {lastSaved && (
+                <span className="text-xs text-muted-foreground/70">
+                  • Auto-saved {new Date().getTime() - lastSaved.getTime() < 2000 ? 'just now' : 'recently'}
+                </span>
+              )}
             </p>
 
             {/* Progress bar */}
