@@ -121,6 +121,18 @@ const ProfilePreview = () => {
     setSaving(true);
 
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to save a profile",
+          variant: "destructive",
+        });
+        setSaving(false);
+        return;
+      }
+
       // Check if profile with this slug already exists
       const { data: existingProfile } = await supabase
         .from("provider_profiles")
@@ -148,6 +160,7 @@ const ProfilePreview = () => {
             languages: data.languages,
             therapeutic_approaches: data.therapeuticApproaches,
             is_public: isPublic,
+            user_id: user.id,
           })
           .eq("id", existingProfile.id)
           .select()
@@ -172,6 +185,7 @@ const ProfilePreview = () => {
             languages: data.languages,
             therapeutic_approaches: data.therapeuticApproaches,
             is_public: isPublic,
+            user_id: user.id,
           })
           .select()
           .single();
