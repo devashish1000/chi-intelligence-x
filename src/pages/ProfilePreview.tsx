@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Download, Share2, Mail, Phone, Award, Calendar, Languages, Heart, Shield } from "lucide-react";
+import { ArrowLeft, Download, Share2, Mail, Phone, Award, Calendar, Languages, Heart, Shield, Edit } from "lucide-react";
 
 interface ProviderData {
   firstName: string;
@@ -67,6 +67,12 @@ const ProfilePreview = () => {
     }
   };
 
+  const handleEdit = () => {
+    // Navigate back to wizard with data preserved in localStorage
+    localStorage.setItem("providerFormData", JSON.stringify(data));
+    navigate("/provider-wizard");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Hide on print */}
@@ -81,6 +87,10 @@ const ProfilePreview = () => {
             Back
           </Button>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={handleEdit} className="gap-2">
+              <Edit className="h-4 w-4" />
+              Edit Profile
+            </Button>
             <Button variant="outline" onClick={handleShare} className="gap-2">
               <Share2 className="h-4 w-4" />
               Share
