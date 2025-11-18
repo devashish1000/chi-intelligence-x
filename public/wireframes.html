@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Wireframes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #1a1a1a;
+            font-size: 2.5rem;
+        }
+        .page-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .page-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+        .page-route {
+            background: #6366f1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+        .page-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        .public { background: #10b981; color: white; }
+        .protected { background: #f59e0b; color: white; }
+        .error { background: #ef4444; color: white; }
+        .wireframe {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
+            min-height: 400px;
+        }
+        .wireframe-element {
+            background: #e5e7eb;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            position: relative;
+        }
+        .wireframe-element.center {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        .wireframe-element.full {
+            width: 100%;
+        }
+        .wireframe-element.grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        .card {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 20px;
+            min-height: 120px;
+        }
+        .element-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .button {
+            background: #6366f1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        .input-field {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 8px 0;
+            width: 100%;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .features-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .features-list li {
+            padding: 8px 0;
+            color: #4b5563;
+        }
+        .features-list li:before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Application Wireframes</h1>
+
+        <!-- Index Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Landing Page</span>
+                    <span class="page-type public">PUBLIC</span>
+                </div>
+                <span class="page-route">/</span>
+            </div>
+            <div class="wireframe">
+                <div class="header">
+                    <h2 style="font-size: 2rem; margin-bottom: 10px;">Welcome</h2>
+                    <p>Cosmic animated background with stars and particles</p>
+                </div>
+                <div class="wireframe-element center">
+                    <div class="element-label">Authentication Card</div>
+                    <div class="input-field">Email Input</div>
+                    <div class="input-field">Password Input</div>
+                    <div class="button" style="width: 100%; text-align: center;">Sign In / Sign Up</div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <div class="button" style="background: #dc2626;">Google</div>
+                        <div class="button" style="background: #1f2937;">GitHub</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Selection Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Service Selection</span>
+                    <span class="page-type protected">PROTECTED</span>
+                </div>
+                <span class="page-route">/service-selection</span>
+            </div>
+            <div class="wireframe">
+                <div class="header">
+                    <h2 style="font-size: 2rem;">Select Your Services</h2>
+                    <p>Choose service lines and locations</p>
+                </div>
+                <div class="wireframe-element full">
+                    <div class="element-label">Service Lines (Selectable)</div>
+                    <div class="wireframe-element grid">
+                        <div class="card">🏥 Primary Care</div>
+                        <div class="card">🧠 Mental Health</div>
+                        <div class="card">💊 Pharmacy</div>
+                        <div class="card">🦷 Dental</div>
+                    </div>
+                </div>
+                <div class="wireframe-element full">
+                    <div class="element-label">CHI Omaha Locations (Selectable)</div>
+                    <div class="wireframe-element grid">
+                        <div class="card">📍 Location 1</div>
+                        <div class="card">📍 Location 2</div>
+                        <div class="card">📍 Location 3</div>
+                    </div>
+                </div>
+                <div class="wireframe-element center">
+                    <div class="element-label">Selection Summary</div>
+                    <p>Selected services and locations displayed here</p>
+                    <div class="button" style="width: 100%; text-align: center; margin-top: 15px;">Continue to Dashboard</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Provider Wizard Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Provider Wizard</span>
+                    <span class="page-type protected">PROTECTED</span>
+                </div>
+                <span class="page-route">/provider-wizard</span>
+            </div>
+            <div class="wireframe">
+                <div class="wireframe-element center">
+                    <div class="element-label">Multi-Step Form</div>
+                    <div class="input-field">First Name</div>
+                    <div class="input-field">Last Name</div>
+                    <div class="input-field">Email</div>
+                    <div class="input-field">Phone</div>
+                    <div class="input-field">License Number</div>
+                    <div class="input-field">License State</div>
+                    <div class="input-field">Years of Experience</div>
+                    <div class="input-field">Specialties (Multi-select)</div>
+                    <div class="input-field">Therapeutic Approaches (Multi-select)</div>
+                    <div class="input-field">Languages (Multi-select)</div>
+                    <div class="input-field">Availability (Multi-select)</div>
+                    <div class="input-field">Session Types (Multi-select)</div>
+                    <div class="input-field">Insurance Acceptance</div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                        <div class="button" style="background: #6b7280;">Back</div>
+                        <div class="button">Next / Submit</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Preview Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Profile Preview</span>
+                    <span class="page-type protected">PROTECTED</span>
+                </div>
+                <span class="page-route">/profile-preview</span>
+            </div>
+            <div class="wireframe">
+                <div class="wireframe-element full">
+                    <div class="element-label">Action Bar (Sticky)</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <div class="button">✏️ Edit</div>
+                        <div class="button">🔗 Generate Public URL</div>
+                        <div class="button">📤 Share</div>
+                        <div class="button">🖨️ Print</div>
+                    </div>
+                </div>
+                <div class="wireframe-element full">
+                    <div class="element-label">Provider Information Cards</div>
+                    <div class="wireframe-element grid">
+                        <div class="card">
+                            <strong>Personal Information</strong>
+                            <p>Name, Contact</p>
+                        </div>
+                        <div class="card">
+                            <strong>Professional Details</strong>
+                            <p>License, Experience</p>
+                        </div>
+                        <div class="card">
+                            <strong>Specialties</strong>
+                            <p>List of specialties</p>
+                        </div>
+                        <div class="card">
+                            <strong>Therapeutic Approaches</strong>
+                            <p>Treatment methods</p>
+                        </div>
+                        <div class="card">
+                            <strong>Practice Preferences</strong>
+                            <p>Availability, Sessions</p>
+                        </div>
+                        <div class="card">
+                            <strong>Languages</strong>
+                            <p>Spoken languages</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Dashboard</span>
+                    <span class="page-type protected">PROTECTED</span>
+                </div>
+                <span class="page-route">/dashboard</span>
+            </div>
+            <div class="wireframe">
+                <div class="header">
+                    <h2 style="font-size: 2rem;">Dashboard</h2>
+                    <p>Your personalized analytics dashboard</p>
+                </div>
+                <div class="wireframe-element center">
+                    <div class="element-label">Welcome Card</div>
+                    <h3>Welcome to Your Dashboard</h3>
+                    <p style="color: #6b7280; margin: 10px 0;">This is where your customized analytics will appear based on your selected service lines and locations.</p>
+                </div>
+                <div class="wireframe-element center">
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <div class="button" style="background: #6b7280;">Modify Selection</div>
+                        <div class="button" style="background: #6b7280;">Sign Out</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Public Profile Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Public Profile</span>
+                    <span class="page-type public">PUBLIC</span>
+                </div>
+                <span class="page-route">/p/:slug</span>
+            </div>
+            <div class="wireframe">
+                <div class="wireframe-element full">
+                    <div class="element-label">Navigation</div>
+                    <div class="button" style="background: #6b7280;">← Back to Home</div>
+                </div>
+                <div class="wireframe-element center">
+                    <div class="element-label">Provider Header</div>
+                    <h2>Dr. Provider Name</h2>
+                    <p style="color: #6b7280;">Specialties badges</p>
+                </div>
+                <div class="wireframe-element full">
+                    <div class="element-label">Public Profile Information</div>
+                    <ul class="features-list">
+                        <li>Years of Experience</li>
+                        <li>Availability</li>
+                        <li>Session Types</li>
+                        <li>Insurance Acceptance</li>
+                        <li>Languages Spoken</li>
+                        <li>Therapeutic Approaches</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 404 Not Found Page -->
+        <div class="page-section">
+            <div class="page-header">
+                <div>
+                    <span class="page-title">Not Found</span>
+                    <span class="page-type error">ERROR</span>
+                </div>
+                <span class="page-route">*</span>
+            </div>
+            <div class="wireframe">
+                <div class="wireframe-element center" style="text-align: center; padding: 60px 20px;">
+                    <div class="element-label">404 Error Page</div>
+                    <h1 style="font-size: 4rem; margin-bottom: 20px;">404</h1>
+                    <p style="font-size: 1.2rem; color: #6b7280; margin-bottom: 20px;">Oops! Page not found</p>
+                    <div class="button">Return to Home</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
